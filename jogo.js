@@ -73,10 +73,6 @@ function fazColisao(fb, chao) {
   return false;
 };
 
-
-function criaFB() {
-
-};
 const fb = {
   spriteX: 0,
   spriteY: 0,
@@ -92,6 +88,9 @@ const fb = {
       console.log('fez colisão');
 
       mudartela(telas.INICIO);
+      fb.x = 10;
+      fb.y = 50;
+      fb.vel = 0;
       return;
     };
 
