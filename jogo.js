@@ -7,10 +7,8 @@ const som_CAIU = new Audio;
 som_CAIU.src = './efeitos/caiu.wav';
 const som_PONTO = new Audio;
 som_PONTO.src = './efeitos/ponto.wav';
-
 const sprites = new Image();
 sprites.src = './sprites.png';
-
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 // background
@@ -21,6 +19,13 @@ const planoDeFundo = {
   altura: 204,
   x: 0,
   y: canvas.height - 204,
+  atualiza(){
+    const moviC =1;
+    const repeti = planoDeFundo.largura / 2;
+    const movim = planoDeFundo.x -= moviC;
+
+    planoDeFundo.x = movim % repeti;
+  },
   desenha() {
     ctx.fillStyle = '#70c5ce';
     ctx.fillRect(0,0, canvas.width, canvas.height);
@@ -104,6 +109,7 @@ const fb = {
       fb.x = 0,
       fb.vel = 0,
       canos.pares.shift();
+      canos.pares.shift();
       mudartela(telas.INICIO);
       return;
     };
@@ -113,6 +119,7 @@ const fb = {
       fb.y = 50,
       fb.x = 0,
       fb.vel = 0,
+      canos.pares.shift();
       canos.pares.shift();
       mudartela(telas.INICIO);
     };
@@ -260,6 +267,7 @@ const canos = {
           fb.x = 10;
           fb.y = 50;
           fb.vel = 0;
+          canos.pares.shift();
           canos.pares.shift();
           mudartela(telas.INICIO);
           return;
