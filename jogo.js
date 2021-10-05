@@ -243,7 +243,16 @@ const canos = {
         par.x -= 2;
 
         if(canos.temColisaoComOFb(par)) {
-          console.log('Você perdeu!')
+          console.log('fez colisão');
+
+          som_HIT.play();
+          mudartela(telas.INICIO);
+          fb.x = 10;
+          fb.y = 50;
+          fb.vel = 0;
+          canos.pares.shift();
+          canos.pares.shift();
+          return;
         };
 
         if(par.x + canos.largura <= 0) {
