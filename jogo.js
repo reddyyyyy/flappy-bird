@@ -1,3 +1,4 @@
+let frames = 0;
 const som_HIT = new Audio;
 som_HIT.src = './efeitos/hit.wav';
 const som_PULO = new Audio;
@@ -12,8 +13,6 @@ sprites.src = './sprites.png';
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-
-
 // background
 const planoDeFundo = {
   spriteX: 390,
@@ -25,7 +24,6 @@ const planoDeFundo = {
   desenha() {
     ctx.fillStyle = '#70c5ce';
     ctx.fillRect(0,0, canvas.width, canvas.height);
-
     ctx.drawImage(
       sprites,
       planoDeFundo.spriteX, planoDeFundo.spriteY,
@@ -33,7 +31,6 @@ const planoDeFundo = {
       planoDeFundo.x, planoDeFundo.y,
       planoDeFundo.largura, planoDeFundo.altura,
     );
-
     ctx.drawImage(
       sprites,
       planoDeFundo.spriteX, planoDeFundo.spriteY,
@@ -43,7 +40,6 @@ const planoDeFundo = {
     );
   },
 };
-
 // Chão
 const chao = {
   spriteX: 0,
@@ -52,6 +48,17 @@ const chao = {
   altura: 112,
   x: 0,
   y: canvas.height - 112,
+  atualiza() {
+    const mc =1;
+    const repete = chao.largura / 2;
+    const movi = chao.x -= mc;
+
+    //console.log('chao.x', chao.x);
+    //console.log('repete', repete);
+    //console.log('movimento', movi % repete);
+
+    chao.x = movi % repete;
+  },
   desenha() {
     ctx.drawImage(
       sprites,
@@ -60,7 +67,6 @@ const chao = {
       chao.x, chao.y,
       chao.largura, chao.altura,
     );
-
     ctx.drawImage(
       sprites,
       chao.spriteX, chao.spriteY,
@@ -70,18 +76,14 @@ const chao = {
     );
   },
 };
-
 function fazColisao(fb, chao) {
   const fbY = fb.y + fb.altura;
   const chaoY = chao.y;
-
   if (fbY >=  chaoY) {
     return true;
   };
-
   return false;
 };
-
 const fb = {
   spriteX: 0,
   spriteY: 0,
@@ -103,8 +105,6 @@ const fb = {
       fb.vel = 0;
       return;
     };
-
-
     fb.vel += fb.gravidade;
     fb.y += fb.vel;
   },
@@ -113,17 +113,35 @@ const fb = {
     som_PULO.play();
     fb.vel = - fb.pulo;
   },
+  movimentos: [
+    { sX: 0, sY: 0,},
+    { sX: 0, sY: 26,},
+    { sX: 0, sY: 52,},
+  ],
+  frameAtual: 0,
+  atualizaFrame() {
+    const intervalo = 10;
+    const passouIntervalo = frames % intervalo === 0;
+
+    if (passouIntervalo) {
+      const baseIncremento = 1;
+      const incremento = baseIncremento+ this.frameAtual;
+      const baseRepetisao = fb.movimentos.length;
+      this.frameAtual = incremento % baseRepetisao;
+    };
+  },
   desenha() {
+    this.atualizaFrame();
+    const { sX, sY } = this.movimentos[this.frameAtual];
     ctx.drawImage(
       sprites,
-      fb.spriteX, fb.spriteY, 
+      sX, sY, 
       fb.largura, fb.altura, 
       fb.x, fb.y,
       fb.largura, fb.altura,
     );
   },
 };
-
 /// tela inicial
 const mgr = {
   spriteX: 134,
@@ -149,7 +167,6 @@ let telaAtiva = {};
 function mudartela(novatela) {
   telaAtiva = novatela;
 };
-
 const telas = {
   INICIO: {
     desenha() {
@@ -159,14 +176,13 @@ const telas = {
       mgr.desenha();
     },
     atualiza() {
-
+      chao.atualiza();
     },
     click() {
       mudartela(telas.JOGO);
     },
   },
 };
-
 telas.JOGO = {
   desenha(){
     planoDeFundo.desenha();
@@ -180,20 +196,17 @@ telas.JOGO = {
     fb.atualiza();
   },
 };
-
 function loop() {
-
   telaAtiva.desenha();
   telaAtiva.atualiza();
 
+  frames++;
   requestAnimationFrame(loop);
 };
-
 window.addEventListener('click', function(){
   if (telaAtiva.click) {
     telaAtiva.click();
   };
 });
-
 mudartela(telas.INICIO);
 loop();
