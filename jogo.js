@@ -161,6 +161,99 @@ const mgr = {
   },
 };
 
+//canos
+const canos = {
+    largura: 52,
+    altura: 400,
+    chao: {
+      sX: 0,
+      sY: 169,
+    },
+    ceu: {
+      sX: 52,
+      sY: 169,
+    },
+    espaco: 80,
+    pares: [],
+    desenha() {
+      canos.pares.forEach(function(par) {
+        const yRandom = par.y;
+        const espacamento = 90;
+  
+        const canoCeuX = par.x;
+        const canoCeuY = yRandom;
+  
+        // cano do céu
+      ctx.drawImage(
+        sprites,
+        canos.ceu.sX, canos.ceu.sY,
+        canos.largura, canos.altura,
+        canoCeuX, canoCeuY,
+        canos.largura, canos.altura,
+     );
+
+     const canoChaoX = par.x;
+      const canoChaoY = canos.altura + espacamento + yRandom;
+      // cano do chão
+      ctx.drawImage(
+        sprites,
+        canos.chao.sX, canos.chao.sY,
+        canos.largura, canos.altura,
+        canoChaoX, canoChaoY,
+        canos.largura, canos.altura,
+     );
+
+     par.canoCeu = {
+        x: canoCeuX,
+        y: canos.altura + canoCeuY,
+     }
+     par.canoChao = {
+       x: canoChaoX,
+       y: canoChaoY,
+     }
+      });
+    },
+    temColisaoComOFb(par) {
+      const CFB = fb.y;
+      const PFB = fb.y + fb.altura;
+      if (fb.x >= par.x) {
+        //console.log('o flappy entrou nos canos');
+        if(CFB <= par.canoCeu.y) {
+          return true;
+        };
+
+        if (PFB >= par.canoChao.y) {
+          return true;
+        };
+      };
+
+      return false
+    },
+    atualiza() {
+      const p100f = frames % 100 === 0;
+      if (p100f) {
+        console.log('passou dos 100 frames');
+        canos.pares.push({
+          x: canvas.width,
+          y: -150 * (Math.random() + 1),
+        });
+      };
+
+      canos.pares.forEach(function(par) {
+        par.x -= 2;
+
+        if(canos.temColisaoComOFb(par)) {
+          console.log('Você perdeu!')
+        };
+
+        if(par.x + canos.largura <= 0) {
+          canos.pares.shift();
+        };
+      });
+    },
+};
+
+
 // telas
 const globais = {};
 let telaAtiva = {};
@@ -171,9 +264,9 @@ const telas = {
   INICIO: {
     desenha() {
       planoDeFundo.desenha();
-      chao.desenha();
       fb.desenha();
       mgr.desenha();
+      chao.desenha();
     },
     atualiza() {
       chao.atualiza();
@@ -186,6 +279,7 @@ const telas = {
 telas.JOGO = {
   desenha(){
     planoDeFundo.desenha();
+    canos.desenha();
     chao.desenha();
     fb.desenha();
   },
@@ -193,7 +287,9 @@ telas.JOGO = {
     fb.pula();
   },
   atualiza(){
+    canos.atualiza();
     fb.atualiza();
+    chao.atualiza();
   },
 };
 function loop() {
