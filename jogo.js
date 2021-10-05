@@ -1,3 +1,12 @@
+const som_HIT = new Audio;
+som_HIT.src = './efeitos/hit.wav';
+const som_PULO = new Audio;
+som_PULO.src = './efeitos/pulo.wav';
+const som_CAIU = new Audio;
+som_CAIU.src = './efeitos/caiu.wav';
+const som_PONTO = new Audio;
+som_PONTO.src = './efeitos/ponto.wav';
+
 const sprites = new Image();
 sprites.src = './sprites.png';
 
@@ -87,6 +96,7 @@ const fb = {
     if(fazColisao(fb, chao)) {
       console.log('fez colisão');
 
+      som_CAIU.play();
       mudartela(telas.INICIO);
       fb.x = 10;
       fb.y = 50;
@@ -100,6 +110,7 @@ const fb = {
   },
   pula() {
     console.log('pulo!');
+    som_PULO.play();
     fb.vel = - fb.pulo;
   },
   desenha() {
@@ -133,6 +144,7 @@ const mgr = {
 };
 
 // telas
+const globais = {};
 let telaAtiva = {};
 function mudartela(novatela) {
   telaAtiva = novatela;
