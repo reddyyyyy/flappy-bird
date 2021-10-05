@@ -62,6 +62,21 @@ const chao = {
   },
 };
 
+function fazColisao(fb, chao) {
+  const fbY = fb.y + fb.altura;
+  const chaoY = chao.y;
+
+  if (fbY >=  chaoY) {
+    return true;
+  };
+
+  return false;
+};
+
+
+function criaFB() {
+
+};
 const fb = {
   spriteX: 0,
   spriteY: 0,
@@ -71,9 +86,22 @@ const fb = {
   y: 50,
   vel: 0,
   gravidade: 0.13,
+  pulo: 4.6,
   atualiza() {
+    if(fazColisao(fb, chao)) {
+      console.log('fez colisão');
+
+      mudartela(telas.INICIO);
+      return;
+    };
+
+
     fb.vel += fb.gravidade;
     fb.y += fb.vel;
+  },
+  pula() {
+    console.log('pulo!');
+    fb.vel = - fb.pulo;
   },
   desenha() {
     ctx.drawImage(
@@ -133,6 +161,9 @@ telas.JOGO = {
     planoDeFundo.desenha();
     chao.desenha();
     fb.desenha();
+  },
+  click() {
+    fb.pula();
   },
   atualiza(){
     fb.atualiza();
