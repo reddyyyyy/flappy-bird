@@ -86,7 +86,7 @@ const fb = {
   },
 };
 
-/// menssagem inicial
+/// tela inicial
 const mgr = {
   spriteX: 134,
   spriteY: 0,
@@ -105,13 +105,53 @@ const mgr = {
   },
 };
 
+// telas
+let telaAtiva = {};
+function mudartela(novatela) {
+  telaAtiva = novatela;
+};
+
+const telas = {
+  INICIO: {
+    desenha() {
+      planoDeFundo.desenha();
+      chao.desenha();
+      fb.desenha();
+      mgr.desenha();
+    },
+    atualiza() {
+
+    },
+    click() {
+      mudartela(telas.JOGO);
+    },
+  },
+};
+
+telas.JOGO = {
+  desenha(){
+    planoDeFundo.desenha();
+    chao.desenha();
+    fb.desenha();
+  },
+  atualiza(){
+    fb.atualiza();
+  },
+};
+
 function loop() {
-  planoDeFundo.desenha();
-  chao.desenha();
-  fb.desenha();
-  fb.atualiza();
-  mgr.desenha();
+
+  telaAtiva.desenha();
+  telaAtiva.atualiza();
+
   requestAnimationFrame(loop);
 };
 
+window.addEventListener('click', function(){
+  if (telaAtiva.click) {
+    telaAtiva.click();
+  };
+});
+
+mudartela(telas.INICIO);
 loop();
