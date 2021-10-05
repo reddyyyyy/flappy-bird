@@ -109,6 +109,7 @@ const fb = {
     };
     if (fazColisaoCeu(fb)) {
       console.log('Foi pro céu!')
+      som_CAIU.play();
       fb.y = 50,
       fb.x = 0,
       fb.vel = 0,
