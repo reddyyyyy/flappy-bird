@@ -99,11 +99,21 @@ const fb = {
       console.log('fez colisão');
 
       som_CAIU.play();
+      console.log('Caiu!')
+      fb.y = 50,
+      fb.x = 0,
+      fb.vel = 0,
+      canos.pares.shift();
       mudartela(telas.INICIO);
-      fb.x = 10;
-      fb.y = 50;
-      fb.vel = 0;
       return;
+    };
+    if (fazColisaoCeu(fb)) {
+      console.log('Foi pro céu!')
+      fb.y = 50,
+      fb.x = 0,
+      fb.vel = 0,
+      canos.pares.shift();
+      mudartela(telas.INICIO);
     };
     fb.vel += fb.gravidade;
     fb.y += fb.vel;
@@ -246,12 +256,11 @@ const canos = {
           console.log('fez colisão');
 
           som_HIT.play();
-          mudartela(telas.INICIO);
           fb.x = 10;
           fb.y = 50;
           fb.vel = 0;
           canos.pares.shift();
-          canos.pares.shift();
+          mudartela(telas.INICIO);
           return;
         };
 
@@ -264,7 +273,7 @@ const canos = {
 
 
 // telas
-const globais = {};
+const globais = {}; // variavel inutil
 let telaAtiva = {};
 function mudartela(novatela) {
   telaAtiva = novatela;
@@ -301,6 +310,14 @@ telas.JOGO = {
     chao.atualiza();
   },
 };
+
+function fazColisaoCeu(fb) {
+  if (fb.y <= 0) {
+    return true;
+  };
+  return false;
+};
+
 function loop() {
   telaAtiva.desenha();
   telaAtiva.atualiza();
