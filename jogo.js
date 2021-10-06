@@ -1,3 +1,4 @@
+let best = 0;
 let frames = 0;
 const som_HIT = new Audio;
 som_HIT.src = './efeitos/hit.wav';
@@ -113,7 +114,9 @@ const fb = {
       fb.vel = 0,
       canos.pares.shift();
       canos.pares.shift();
-      placar.pontos = 0;
+      if (best < placar.pontos) {
+        best = placar.pontos;
+      };
       mudartela(telas.GAMEOVER);
       return;
     };
@@ -125,7 +128,9 @@ const fb = {
       fb.vel = 0,
       canos.pares.shift();
       canos.pares.shift();
-      placar.pontos = 0;
+      if (best < placar.pontos) {
+        best = placar.pontos;
+      };
       mudartela(telas.GAMEOVER);
     };
     fb.vel += fb.gravidade;
@@ -313,7 +318,9 @@ const canos = {
           fb.vel = 0;
           canos.pares.shift();
           canos.pares.shift();
-          placar.pontos = 0;
+          if (best < placar.pontos) {
+            best = placar.pontos;
+          };
           mudartela(telas.GAMEOVER);
           return;
         };
@@ -368,16 +375,24 @@ telas.JOGO = {
 };
 telas.GAMEOVER = {
   desenha(){
-    planoDeFundo.desenha();
-    chao.desenha()
-    fb.desenha();
+    //planoDeFundo.desenha();
+    //chao.desenha();
+    //fb.desenha();
     gameover.desenha();
+    ctx.font = '33px "VT323"';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`${placar.pontos}`, canvas.width - 80, 146);
+    ctx.font = '33px "VT323"';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`${best}`, canvas.width - 80, 190);
   },
   atualiza(){
-    chao.atualiza();
   },
   click(){
     mudartela(telas.INICIO);
+    placar.pontos = 0;
   },
 };
 
