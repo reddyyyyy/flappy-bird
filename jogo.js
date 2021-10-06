@@ -89,6 +89,9 @@ function fazColisao(fb, chao) {
   };
   return false;
 };
+
+
+//flappy bird
 const fb = {
   spriteX: 0,
   spriteY: 0,
@@ -110,7 +113,8 @@ const fb = {
       fb.vel = 0,
       canos.pares.shift();
       canos.pares.shift();
-      mudartela(telas.INICIO);
+      placar.pontos = 0;
+      mudartela(telas.GAMEOVER);
       return;
     };
     if (fazColisaoCeu(fb)) {
@@ -121,7 +125,8 @@ const fb = {
       fb.vel = 0,
       canos.pares.shift();
       canos.pares.shift();
-      mudartela(telas.INICIO);
+      placar.pontos = 0;
+      mudartela(telas.GAMEOVER);
     };
     fb.vel += fb.gravidade;
     fb.y += fb.vel;
@@ -176,6 +181,45 @@ const mgr = {
       mgr.x, mgr.y,
       mgr.largura, mgr.altura,
     );
+  },
+};
+
+// game over
+const gameover = {
+  spriteX: 134,
+  spriteY: 153,
+  largura: 226,
+  altura: 200,
+  x: (canvas.width / 2) - 226 / 2,
+  y: 50,
+  desenha() {
+    ctx.drawImage(
+      sprites,
+      gameover.spriteX, gameover.spriteY, 
+      gameover.largura, gameover.altura, 
+      gameover.x, gameover.y,
+      gameover.largura, gameover.altura,
+    );
+  },
+};
+
+// placar
+const placar = {
+  pontos: 0,
+  atualiza(){
+    const IDF = 100;
+    const PI = frames % IDF === 0;
+
+    if(PI) {
+     this.pontos++;
+     som_PONTO.play();
+    };
+  },
+  desenha(){
+    ctx.font = '35px "VT323"';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'white';
+    ctx.fillText(`${this.pontos}`, canvas.width - 10, 35);
   },
 };
 
@@ -269,7 +313,8 @@ const canos = {
           fb.vel = 0;
           canos.pares.shift();
           canos.pares.shift();
-          mudartela(telas.INICIO);
+          placar.pontos = 0;
+          mudartela(telas.GAMEOVER);
           return;
         };
 
@@ -309,6 +354,7 @@ telas.JOGO = {
     canos.desenha();
     chao.desenha();
     fb.desenha();
+    placar.desenha();
   },
   click() {
     fb.pula();
@@ -317,6 +363,21 @@ telas.JOGO = {
     canos.atualiza();
     fb.atualiza();
     chao.atualiza();
+    placar.atualiza();
+  },
+};
+telas.GAMEOVER = {
+  desenha(){
+    planoDeFundo.desenha();
+    chao.desenha()
+    fb.desenha();
+    gameover.desenha();
+  },
+  atualiza(){
+    chao.atualiza();
+  },
+  click(){
+    mudartela(telas.INICIO);
   },
 };
 
